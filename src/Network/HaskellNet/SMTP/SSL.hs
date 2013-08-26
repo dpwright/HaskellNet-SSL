@@ -10,6 +10,7 @@ import Network.HaskellNet.SMTP
 import Network.HaskellNet.SSL
 
 import Network.HaskellNet.BSStream
+import Network.BSD (getHostName)
 
 import qualified Data.ByteString.Char8 as B
 
@@ -35,7 +36,8 @@ connectSTARTTLS hostname port = do
     greeting <- bsGetLine bs
     failIfNot bs 220 $ parseResponse greeting
 
-    bsPut bs $ B.pack "HELO\r\n"
+    hn <- getHostName
+    bsPut bs $ B.pack ("HELO " ++ hn ++ "\r\n")
     getResponse bs >>= failIfNot bs 250
     bsPut bs $ B.pack "STARTTLS\r\n"
     getResponse bs >>= failIfNot bs 220
