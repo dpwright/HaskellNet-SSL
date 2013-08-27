@@ -8,7 +8,6 @@ import Network.HaskellNet.SMTP.SSL
 
 import Network.HaskellNet.Auth (AuthType(PLAIN))
 
-import Network.BSD (getHostName)
 import qualified Data.ByteString.Char8 as B
 
 username = "username@gmail.com"
