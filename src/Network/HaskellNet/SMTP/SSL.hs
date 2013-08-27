@@ -3,6 +3,10 @@ module Network.HaskellNet.SMTP.SSL
     , connectSMTPSSLPort
     , connectSMTPSTARTTLS
     , connectSMTPSTARTTLSPort
+    , doSMTPSSL
+    , doSMTPSSLPort
+    , doSMTPSTARTTLS
+    , doSMTPSTARTTLSPort
     ) where
 
 import Network.Socket.Internal (PortNumber)
@@ -14,6 +18,7 @@ import Network.BSD (getHostName)
 
 import qualified Data.ByteString.Char8 as B
 
+import Control.Exception
 import Control.Monad
 import Data.IORef
 
@@ -64,3 +69,18 @@ prefixedGetLine :: IORef [B.ByteString] -> IO B.ByteString -> IO B.ByteString
 prefixedGetLine prefix rawGetLine = readIORef prefix >>= deliverLine
   where deliverLine [] = rawGetLine
         deliverLine (l:ls) = writeIORef prefix ls >> return l
+
+bracketSMTP :: IO SMTPConnection -> (SMTPConnection -> IO a) -> IO a
+bracketSMTP = flip bracket closeSMTP
+
+doSMTPSSL :: String -> (SMTPConnection -> IO a) -> IO a
+doSMTPSSL host = bracketSMTP $ connectSMTPSSL host
+
+doSMTPSSLPort :: String -> PortNumber -> (SMTPConnection -> IO a) -> IO a
+doSMTPSSLPort host port = bracketSMTP $ connectSMTPSSLPort host port
+
+doSMTPSTARTTLS :: String -> (SMTPConnection -> IO a) -> IO a
+doSMTPSTARTTLS host = bracketSMTP $ connectSMTPSTARTTLS host
+
+doSMTPSTARTTLSPort :: String -> PortNumber -> (SMTPConnection -> IO a) -> IO a
+doSMTPSTARTTLSPort host port = bracketSMTP $ connectSMTPSTARTTLSPort host port
