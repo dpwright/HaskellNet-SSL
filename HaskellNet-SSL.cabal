@@ -26,7 +26,7 @@ library
                        Network.HaskellNet.POP3.SSL
                        Network.HaskellNet.SMTP.SSL
   other-modules:       Network.HaskellNet.SSL
-  build-depends:       base ==4.5.*,
+  build-depends:       base >= 4 && < 5,
                        HaskellNet >= 0.3.1,
                        connection >= 0.1.3,
                        network >= 2.3,
