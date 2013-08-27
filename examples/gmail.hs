@@ -27,11 +27,9 @@ imapTest = do
     B.putStrLn msgContent
     logout c
 
-smtpTest = do
-    c <- connectSMTPSTARTTLS "smtp.gmail.com"
+smtpTest = doSMTPSTARTTLS "smtp.gmail.com" $ \c -> do
     sendCommand c $ AUTH PLAIN username password
     sendMail username [recipient] mailContent c
-    closeSMTP c
   where mailContent = subject `B.append` body
         subject = "Subject: Test message\r\n\r\n"
         body = "This is a test message"
