@@ -1,5 +1,6 @@
 module Network.HaskellNet.IMAP.SSL
-    ( connectIMAPSSL
+    ( -- * Establishing connection
+      connectIMAPSSL
     , connectIMAPSSLPort
     ) where
 

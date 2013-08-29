@@ -1,5 +1,6 @@
 module Network.HaskellNet.POP3.SSL
-    ( connectPop3SSL
+    ( -- * Establishing connection
+      connectPop3SSL
     , connectPop3SSLPort
     ) where
 

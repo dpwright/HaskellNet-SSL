@@ -1,8 +1,10 @@
 module Network.HaskellNet.SMTP.SSL
-    ( connectSMTPSSL
+    ( -- * Establishing connection
+      connectSMTPSSL
     , connectSMTPSSLPort
     , connectSMTPSTARTTLS
     , connectSMTPSTARTTLSPort
+      -- * Other Useful Operations
     , doSMTPSSL
     , doSMTPSSLPort
     , doSMTPSTARTTLS
