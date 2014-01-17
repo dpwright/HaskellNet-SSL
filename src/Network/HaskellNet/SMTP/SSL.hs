@@ -1,17 +1,16 @@
 module Network.HaskellNet.SMTP.SSL
     ( -- * Establishing connection
       connectSMTPSSL
-    , connectSMTPSSLPort
+    , connectSMTPSSLWithSettings
     , connectSMTPSTARTTLS
-    , connectSMTPSTARTTLSPort
+    , connectSMTPSTARTTLSWithSettings
       -- * Other Useful Operations
     , doSMTPSSL
-    , doSMTPSSLPort
+    , doSMTPSSLWithSettings
     , doSMTPSTARTTLS
-    , doSMTPSTARTTLSPort
+    , doSMTPSTARTTLSWithSettings
     ) where
 
-import Network.Socket.Internal (PortNumber)
 import Network.HaskellNet.SMTP
 import Network.HaskellNet.SSL
 
@@ -25,20 +24,21 @@ import Control.Monad
 import Data.IORef
 
 connectSMTPSSL :: String -> IO SMTPConnection
-connectSMTPSSL hostname = connectSMTPSSLPort hostname 465
+connectSMTPSSL hostname = connectSMTPSSLWithSettings hostname cfg
+  where cfg = defaultSettingsWithPort 465
 
-connectSMTPSSLPort :: String -> PortNumber -> IO SMTPConnection
-connectSMTPSSLPort hostname port = connectSSL hostname cfg >>= connectStream
-  where cfg = defaultSettingsWithPort port
+connectSMTPSSLWithSettings :: String -> Settings -> IO SMTPConnection
+connectSMTPSSLWithSettings hostname cfg = connectSSL hostname cfg >>= connectStream
 
 connectSMTPSTARTTLS :: String -> IO SMTPConnection
-connectSMTPSTARTTLS hostname = connectSMTPSTARTTLSPort hostname 587
+connectSMTPSTARTTLS hostname = connectSMTPSTARTTLSWithSettings hostname cfg
+  where cfg = defaultSettingsWithPort 587
 
-connectSMTPSTARTTLSPort :: String -> PortNumber -> IO SMTPConnection
-connectSMTPSTARTTLSPort hostname port = connectSTARTTLS hostname port >>= connectStream
+connectSMTPSTARTTLSWithSettings :: String -> Settings -> IO SMTPConnection
+connectSMTPSTARTTLSWithSettings hostname cfg = connectSTARTTLS hostname cfg >>= connectStream
 
-connectSTARTTLS :: String -> PortNumber -> IO BSStream
-connectSTARTTLS hostname port = do
+connectSTARTTLS :: String -> Settings -> IO BSStream
+connectSTARTTLS hostname cfg = do
     (bs, startTLS) <- connectPlain hostname cfg
 
     greeting <- bsGetLine bs
@@ -58,7 +58,6 @@ connectSTARTTLS hostname port = do
         parse s = (getCode  s, s)
         getCode = read . head . words
         getResponse bs = liftM parseResponse $ bsGetLine bs
-        cfg = defaultSettingsWithPort port
 
 failIfNot :: BSStream -> Integer -> (Integer, String) -> IO ()
 failIfNot bs code (rc, rs) = when (code /= rc) closeAndFail
@@ -80,11 +79,11 @@ bracketSMTP = flip bracket closeSMTP
 doSMTPSSL :: String -> (SMTPConnection -> IO a) -> IO a
 doSMTPSSL host = bracketSMTP $ connectSMTPSSL host
 
-doSMTPSSLPort :: String -> PortNumber -> (SMTPConnection -> IO a) -> IO a
-doSMTPSSLPort host port = bracketSMTP $ connectSMTPSSLPort host port
+doSMTPSSLWithSettings :: String -> Settings -> (SMTPConnection -> IO a) -> IO a
+doSMTPSSLWithSettings host port = bracketSMTP $ connectSMTPSSLWithSettings host port
 
 doSMTPSTARTTLS :: String -> (SMTPConnection -> IO a) -> IO a
 doSMTPSTARTTLS host = bracketSMTP $ connectSMTPSTARTTLS host
 
-doSMTPSTARTTLSPort :: String -> PortNumber -> (SMTPConnection -> IO a) -> IO a
-doSMTPSTARTTLSPort host port = bracketSMTP $ connectSMTPSTARTTLSPort host port
+doSMTPSTARTTLSWithSettings :: String -> Settings -> (SMTPConnection -> IO a) -> IO a
+doSMTPSTARTTLSWithSettings host port = bracketSMTP $ connectSMTPSTARTTLSWithSettings host port
