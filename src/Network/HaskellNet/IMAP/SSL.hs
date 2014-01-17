@@ -13,4 +13,5 @@ connectIMAPSSL :: String -> IO IMAPConnection
 connectIMAPSSL hostname = connectIMAPSSLPort hostname 993
 
 connectIMAPSSLPort :: String -> PortNumber -> IO IMAPConnection
-connectIMAPSSLPort hostname port = connectSSL hostname port >>= connectStream
+connectIMAPSSLPort hostname port = connectSSL hostname cfg >>= connectStream
+  where cfg = defaultSettingsWithPort port

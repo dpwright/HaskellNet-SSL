@@ -1,6 +1,9 @@
-module Network.HaskellNet.SSL ( connectSSL
-                              , connectPlain
-                              ) where
+module Network.HaskellNet.SSL
+  ( Settings (..)
+  , defaultSettingsWithPort
+  , connectSSL
+  , connectPlain
+  ) where
 
 import Network.Connection
 import Network.HaskellNet.BSStream
@@ -11,8 +14,16 @@ import Data.Default
 
 type STARTTLS = IO ()
 
-maxLineLength :: Int
-maxLineLength = 10000
+data Settings = Settings
+              { sslPort          :: PortNumber
+              , sslMaxLineLength :: Int
+              }
+
+defaultSettingsWithPort :: PortNumber -> Settings
+defaultSettingsWithPort p = Settings
+  { sslPort = p
+  , sslMaxLineLength = 10000
+  }
 
 connectionGetBytes :: Connection -> Int -> IO B.ByteString
 connectionGetBytes = loop B.empty where
@@ -20,25 +31,27 @@ connectionGetBytes = loop B.empty where
   loop buf c l = connectionGet c l >>= nextIteration
     where nextIteration b = loop (buf `B.append` b) c $ l - B.length b
 
-connectionToStream :: Connection -> BSStream
-connectionToStream c = BSStream
-                       { bsGet = connectionGetBytes c
-                       , bsPut = connectionPut c
-                       , bsFlush = return ()
-                       , bsClose = connectionClose c
-                       , bsIsOpen = return True
-                       , bsGetLine = connectionGetLine maxLineLength c
-                       }
+connectionToStream :: Connection -> Settings -> BSStream
+connectionToStream c cfg = BSStream
+  { bsGet = connectionGetBytes c
+  , bsPut = connectionPut c
+  , bsFlush = return ()
+  , bsClose = connectionClose c
+  , bsIsOpen = return True
+  , bsGetLine = connectionGetLine maxl c
+  } where maxl = sslMaxLineLength cfg
 
-connectSSL :: String -> PortNumber -> IO BSStream
-connectSSL hostname port = do
+connectSSL :: String -> Settings -> IO BSStream
+connectSSL hostname cfg = do
     c <- initConnectionContext >>= flip connectTo params
-    return $ connectionToStream c
+    return $ connectionToStream c cfg
   where params = ConnectionParams hostname port (Just def) Nothing
+        port = sslPort cfg
 
-connectPlain :: String -> PortNumber -> IO (BSStream, STARTTLS)
-connectPlain hostname port = do
+connectPlain :: String -> Settings -> IO (BSStream, STARTTLS)
+connectPlain hostname cfg = do
     ctx <- initConnectionContext
     c <- connectTo ctx params
-    return (connectionToStream c, connectionSetSecure ctx c def)
+    return (connectionToStream c cfg, connectionSetSecure ctx c def)
   where params = ConnectionParams hostname port Nothing Nothing
+        port = sslPort cfg

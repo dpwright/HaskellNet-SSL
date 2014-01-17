@@ -28,7 +28,8 @@ connectSMTPSSL :: String -> IO SMTPConnection
 connectSMTPSSL hostname = connectSMTPSSLPort hostname 465
 
 connectSMTPSSLPort :: String -> PortNumber -> IO SMTPConnection
-connectSMTPSSLPort hostname port = connectSSL hostname port >>= connectStream
+connectSMTPSSLPort hostname port = connectSSL hostname cfg >>= connectStream
+  where cfg = defaultSettingsWithPort port
 
 connectSMTPSTARTTLS :: String -> IO SMTPConnection
 connectSMTPSTARTTLS hostname = connectSMTPSTARTTLSPort hostname 587
@@ -38,7 +39,7 @@ connectSMTPSTARTTLSPort hostname port = connectSTARTTLS hostname port >>= connec
 
 connectSTARTTLS :: String -> PortNumber -> IO BSStream
 connectSTARTTLS hostname port = do
-    (bs, startTLS) <- connectPlain hostname port
+    (bs, startTLS) <- connectPlain hostname cfg
 
     greeting <- bsGetLine bs
     failIfNot bs 220 $ parseResponse greeting
@@ -57,6 +58,7 @@ connectSTARTTLS hostname port = do
         parse s = (getCode  s, s)
         getCode = read . head . words
         getResponse bs = liftM parseResponse $ bsGetLine bs
+        cfg = defaultSettingsWithPort port
 
 failIfNot :: BSStream -> Integer -> (Integer, String) -> IO ()
 failIfNot bs code (rc, rs) = when (code /= rc) closeAndFail
