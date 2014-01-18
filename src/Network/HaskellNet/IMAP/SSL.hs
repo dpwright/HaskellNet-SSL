@@ -8,6 +8,8 @@ import Network.HaskellNet.IMAP.Connection
 import Network.HaskellNet.IMAP
 import Network.HaskellNet.SSL
 
+import Network.HaskellNet.SSL.Internal
+
 connectIMAPSSL :: String -> IO IMAPConnection
 connectIMAPSSL hostname = connectIMAPSSLWithSettings hostname cfg
   where cfg = defaultSettingsWithPort 993

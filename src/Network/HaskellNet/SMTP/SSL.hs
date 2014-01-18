@@ -14,6 +14,8 @@ module Network.HaskellNet.SMTP.SSL
 import Network.HaskellNet.SMTP
 import Network.HaskellNet.SSL
 
+import Network.HaskellNet.SSL.Internal
+
 import Network.HaskellNet.BSStream
 import Network.BSD (getHostName)
 
