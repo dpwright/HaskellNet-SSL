@@ -9,6 +9,9 @@ module Network.HaskellNet.SMTP.SSL
     , doSMTPSSLWithSettings
     , doSMTPSTARTTLS
     , doSMTPSTARTTLSWithSettings
+      -- * Settings
+    , defaultSettingsSMTPSSL
+    , defaultSettingsSMTPSTARTTLS
     ) where
 
 import Network.HaskellNet.SMTP
@@ -26,15 +29,13 @@ import Control.Monad
 import Data.IORef
 
 connectSMTPSSL :: String -> IO SMTPConnection
-connectSMTPSSL hostname = connectSMTPSSLWithSettings hostname cfg
-  where cfg = defaultSettingsWithPort 465
+connectSMTPSSL hostname = connectSMTPSSLWithSettings hostname defaultSettingsSMTPSSL
 
 connectSMTPSSLWithSettings :: String -> Settings -> IO SMTPConnection
 connectSMTPSSLWithSettings hostname cfg = connectSSL hostname cfg >>= connectStream
 
 connectSMTPSTARTTLS :: String -> IO SMTPConnection
-connectSMTPSTARTTLS hostname = connectSMTPSTARTTLSWithSettings hostname cfg
-  where cfg = defaultSettingsWithPort 587
+connectSMTPSTARTTLS hostname = connectSMTPSTARTTLSWithSettings hostname defaultSettingsSMTPSTARTTLS
 
 connectSMTPSTARTTLSWithSettings :: String -> Settings -> IO SMTPConnection
 connectSMTPSTARTTLSWithSettings hostname cfg = connectSTARTTLS hostname cfg >>= connectStream
@@ -89,3 +90,9 @@ doSMTPSTARTTLS host = bracketSMTP $ connectSMTPSTARTTLS host
 
 doSMTPSTARTTLSWithSettings :: String -> Settings -> (SMTPConnection -> IO a) -> IO a
 doSMTPSTARTTLSWithSettings host port = bracketSMTP $ connectSMTPSTARTTLSWithSettings host port
+
+defaultSettingsSMTPSSL :: Settings
+defaultSettingsSMTPSSL = defaultSettingsWithPort 465
+
+defaultSettingsSMTPSTARTTLS :: Settings
+defaultSettingsSMTPSTARTTLS = defaultSettingsWithPort 587
