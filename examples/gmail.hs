@@ -6,6 +6,8 @@ import Network.HaskellNet.IMAP.SSL
 import Network.HaskellNet.SMTP
 import Network.HaskellNet.SMTP.SSL
 
+import Network.HaskellNet.SSL
+
 import Network.HaskellNet.Auth (AuthType(PLAIN))
 
 import qualified Data.ByteString.Char8 as B
@@ -15,7 +17,7 @@ password = "password"
 recipient = "someone@somewhere.com"
 
 imapTest = do
-    c <- connectIMAPSSL "imap.gmail.com"
+    c <- connectIMAPSSLWithSettings "imap.gmail.com" cfg
     login c username password
     mboxes <- list c
     mapM_ print mboxes
@@ -25,6 +27,7 @@ imapTest = do
     msgContent <- fetch c firstMsg
     B.putStrLn msgContent
     logout c
+  where cfg = defaultSettingsIMAPSSL { sslMaxLineLength = 100000 }
 
 smtpTest = doSMTPSTARTTLS "smtp.gmail.com" $ \c -> do
     sendCommand c $ AUTH PLAIN username password
