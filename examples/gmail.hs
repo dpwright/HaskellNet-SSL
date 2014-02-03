@@ -8,7 +8,7 @@ import Network.HaskellNet.SMTP.SSL
 
 import Network.HaskellNet.SSL
 
-import Network.HaskellNet.Auth (AuthType(PLAIN))
+import Network.HaskellNet.Auth (AuthType(LOGIN))
 
 import qualified Data.ByteString.Char8 as B
 
@@ -30,8 +30,10 @@ imapTest = do
   where cfg = defaultSettingsIMAPSSL { sslMaxLineLength = 100000 }
 
 smtpTest = doSMTPSTARTTLS "smtp.gmail.com" $ \c -> do
-    sendCommand c $ AUTH PLAIN username password
-    sendMail username [recipient] mailContent c
+    r@(rsp, _) <- sendCommand c $ AUTH LOGIN username password
+    if rsp /= 235
+      then print r
+      else sendMail username [recipient] mailContent c
   where mailContent = subject `B.append` body
         subject = "Subject: Test message\r\n\r\n"
         body = "This is a test message"
