@@ -29,8 +29,8 @@ library
   other-modules:       Network.HaskellNet.SSL.Internal
   build-depends:       base >= 4 && < 5,
                        HaskellNet == 0.3.*,
-                       tls == 1.1.*,
-                       connection == 0.1.*,
+                       tls == 1.2.*,
+                       connection == 0.2.*,
                        network == 2.4.*,
                        bytestring,
                        data-default
