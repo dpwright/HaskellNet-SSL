@@ -1,6 +1,8 @@
 HaskellNet-SSL
 --------------
 
+[![Build Status](https://travis-ci.org/dpwright/HaskellNet-SSL.svg?branch=master)](https://travis-ci.org/dpwright/HaskellNet-SSL)
+
 This package ties together the excellent [HaskellNet][HaskellNet] and
 [connection][connection] packages to make it easy to open IMAP and SMTP
 connections over SSL.  This is a simple "glue" library; all credit for a)
