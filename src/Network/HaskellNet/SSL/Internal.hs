@@ -3,13 +3,14 @@ module Network.HaskellNet.SSL.Internal
   , connectPlain
   ) where
 
-
 import Network.Connection
 import Network.HaskellNet.SSL
 import Network.HaskellNet.BSStream
 
 import qualified Data.ByteString.Char8 as B
 import Data.Default
+
+import Control.Monad ((>=>))
 
 type STARTTLS = IO ()
 
@@ -21,13 +22,20 @@ connectionGetBytes = loop B.empty where
 
 connectionToStream :: Connection -> Settings -> BSStream
 connectionToStream c cfg = BSStream
-  { bsGet = connectionGetBytes c
-  , bsPut = connectionPut c
+  { bsGet = connectionGetBytes c >=> withLog "RECV"
+  , bsPut = withLog "SEND" >=> connectionPut c
   , bsFlush = return ()
   , bsClose = connectionClose c
   , bsIsOpen = return True
-  , bsGetLine = connectionGetLine maxl c
+  , bsGetLine = connectionGetLine maxl c >>= withLog "RECV"
   } where maxl = sslMaxLineLength cfg
+          withLog = if sslLogToConsole cfg then logToConsole
+                                           else flip (const . return)
+
+logToConsole :: String -> B.ByteString -> IO B.ByteString
+logToConsole dir s = do
+    putStrLn $ "HaskellNet-SSL " ++ dir ++ ": " ++ show s
+    return s
 
 connectSSL :: String -> Settings -> IO BSStream
 connectSSL hostname cfg = do
