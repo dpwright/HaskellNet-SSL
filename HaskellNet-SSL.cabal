@@ -15,6 +15,10 @@ build-type:          Simple
 cabal-version:       >=1.8
 data-files:          README.md
 
+Flag NoUpperBounds
+  Description: Removes upper bounds from all packages
+  Default: False
+
 source-repository head
   type:     git
   location: git://github.com/dpwright/HaskellNet-SSL.git
@@ -27,7 +31,16 @@ library
                        Network.HaskellNet.SMTP.SSL
                        Network.HaskellNet.SSL
   other-modules:       Network.HaskellNet.SSL.Internal
-  build-depends:       base >= 4 && < 5,
+  if flag(NoUpperBounds)
+    build-depends:     base >= 4,
+                       HaskellNet >= 0.3,
+                       tls >= 1.2,
+                       connection >= 0.2,
+                       network >= 2.4,
+                       bytestring,
+                       data-default
+  else
+    build-depends:     base >= 4 && < 5,
                        HaskellNet >= 0.3 && < 0.5,
                        tls == 1.2.*,
                        connection == 0.2.*,
