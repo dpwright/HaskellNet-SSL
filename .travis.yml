@@ -1,5 +1,8 @@
 language: haskell
-ghc:
-  - 7.8
-  - 7.6
-  - 7.4
+matrix:
+  include:
+    - ghc: 7.8
+    - ghc: 7.6
+    - ghc: 7.3
+    - ghc: 7.8
+      install: cabal install --only-dependencies --enable-tests -f NoUpperBounds
