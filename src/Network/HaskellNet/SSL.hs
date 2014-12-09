@@ -6,9 +6,10 @@ module Network.HaskellNet.SSL
 import Network.Socket.Internal (PortNumber)
 
 data Settings = Settings
-              { sslPort          :: PortNumber
-              , sslMaxLineLength :: Int
-              , sslLogToConsole  :: Bool
+              { sslPort                        :: PortNumber
+              , sslMaxLineLength               :: Int
+              , sslLogToConsole                :: Bool
+              , sslDisableCertficateValidation :: Bool
               }
 
 defaultSettingsWithPort :: PortNumber -> Settings
@@ -16,4 +17,5 @@ defaultSettingsWithPort p = Settings
   { sslPort = p
   , sslMaxLineLength = 10000
   , sslLogToConsole = False
+  , sslDisableCertficateValidation = False
   }

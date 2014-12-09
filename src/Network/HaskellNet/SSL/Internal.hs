@@ -41,13 +41,15 @@ connectSSL :: String -> Settings -> IO BSStream
 connectSSL hostname cfg = do
     c <- initConnectionContext >>= flip connectTo params
     return $ connectionToStream c cfg
-  where params = ConnectionParams hostname port (Just def) Nothing
+  where params = ConnectionParams hostname port (Just tlsCfg) Nothing
         port = sslPort cfg
+        tlsCfg = def { settingDisableCertificateValidation = sslDisableCertficateValidation cfg }
 
 connectPlain :: String -> Settings -> IO (BSStream, STARTTLS)
 connectPlain hostname cfg = do
     ctx <- initConnectionContext
     c <- connectTo ctx params
-    return (connectionToStream c cfg, connectionSetSecure ctx c def)
+    return (connectionToStream c cfg, connectionSetSecure ctx c tlsCfg)
   where params = ConnectionParams hostname port Nothing Nothing
         port = sslPort cfg
+        tlsCfg = def { settingDisableCertificateValidation = sslDisableCertficateValidation cfg }
