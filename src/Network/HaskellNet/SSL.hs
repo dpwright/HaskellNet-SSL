@@ -9,7 +9,7 @@ data Settings = Settings
               { sslPort                        :: PortNumber
               , sslMaxLineLength               :: Int
               , sslLogToConsole                :: Bool
-              , sslDisableCertficateValidation :: Bool
+              , sslDisableCertificateValidation :: Bool
               }
 
 defaultSettingsWithPort :: PortNumber -> Settings
@@ -17,5 +17,5 @@ defaultSettingsWithPort p = Settings
   { sslPort = p
   , sslMaxLineLength = 10000
   , sslLogToConsole = False
-  , sslDisableCertficateValidation = False
+  , sslDisableCertificateValidation = False
   }
