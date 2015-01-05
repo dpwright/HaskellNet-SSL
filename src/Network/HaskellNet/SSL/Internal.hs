@@ -43,7 +43,7 @@ connectSSL hostname cfg = do
     return $ connectionToStream c cfg
   where params = ConnectionParams hostname port (Just tlsCfg) Nothing
         port = sslPort cfg
-        tlsCfg = def { settingDisableCertificateValidation = sslDisableCertficateValidation cfg }
+        tlsCfg = def { settingDisableCertificateValidation = sslDisableCertificateValidation cfg }
 
 connectPlain :: String -> Settings -> IO (BSStream, STARTTLS)
 connectPlain hostname cfg = do
@@ -52,4 +52,4 @@ connectPlain hostname cfg = do
     return (connectionToStream c cfg, connectionSetSecure ctx c tlsCfg)
   where params = ConnectionParams hostname port Nothing Nothing
         port = sslPort cfg
-        tlsCfg = def { settingDisableCertificateValidation = sslDisableCertficateValidation cfg }
+        tlsCfg = def { settingDisableCertificateValidation = sslDisableCertificateValidation cfg }
