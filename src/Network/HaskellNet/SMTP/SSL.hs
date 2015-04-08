@@ -10,8 +10,11 @@ module Network.HaskellNet.SMTP.SSL
     , doSMTPSTARTTLS
     , doSMTPSTARTTLSWithSettings
       -- * Settings
+    , Settings(..)
     , defaultSettingsSMTPSSL
     , defaultSettingsSMTPSTARTTLS
+      -- * Network.HaskellNet.SMTP re-exports
+    , module Network.HaskellNet.SMTP
     ) where
 
 import Network.HaskellNet.SMTP
