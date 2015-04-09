@@ -3,7 +3,10 @@ module Network.HaskellNet.POP3.SSL
       connectPop3SSL
     , connectPop3SSLWithSettings
       -- * Settings
+    , Settings(..)
     , defaultSettingsPop3SSL
+      -- * Network.HaskellNet.POP3 re-exports
+    , module Network.HaskellNet.POP3
     ) where
 
 import Network.HaskellNet.POP3.Connection

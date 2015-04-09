@@ -3,7 +3,10 @@ module Network.HaskellNet.IMAP.SSL
       connectIMAPSSL
     , connectIMAPSSLWithSettings
       -- * Settings
+    , Settings(..)
     , defaultSettingsIMAPSSL
+      -- * Network.HaskellNet.IMAP re-exports
+    , module Network.HaskellNet.IMAP
     ) where
 
 import Network.HaskellNet.IMAP.Connection
