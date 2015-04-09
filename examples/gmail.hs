@@ -1,14 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Network.HaskellNet.IMAP
-import Network.HaskellNet.IMAP.SSL
+import           Network.HaskellNet.IMAP.SSL
+import           Network.HaskellNet.SMTP.SSL as SMTP
 
-import Network.HaskellNet.SMTP
-import Network.HaskellNet.SMTP.SSL
-
-import Network.HaskellNet.SSL
-
-import Network.HaskellNet.Auth (AuthType(LOGIN))
+import           Network.HaskellNet.Auth (AuthType(LOGIN))
 
 import qualified Data.ByteString.Char8 as B
 
@@ -30,13 +25,12 @@ imapTest = do
   where cfg = defaultSettingsIMAPSSL { sslMaxLineLength = 100000 }
 
 smtpTest = doSMTPSTARTTLS "smtp.gmail.com" $ \c -> do
-    r@(rsp, _) <- sendCommand c $ AUTH LOGIN username password
-    if rsp /= 235
-      then print r
-      else sendMail username [recipient] mailContent c
-  where mailContent = subject `B.append` body
-        subject = "Subject: Test message\r\n\r\n"
-        body = "This is a test message"
+    authSucceed <- SMTP.authenticate LOGIN username password c
+    if authSucceed
+      then print "Authentication error."
+      else sendPlainTextMail recipient username subject body c
+  where subject = "Test message"
+        body    = "This is a test message"
 
 main :: IO ()
 main = smtpTest >> imapTest >> return ()
