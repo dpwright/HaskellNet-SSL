@@ -8,7 +8,7 @@ homepage:            https://github.com/dpwright/HaskellNet-SSL
 license:             BSD3
 license-file:        LICENSE
 author:              Daniel P. Wright
-maintainer:          dani@dpwright.com
+maintainer:          Leza M. Lutonda <lemol-c@outlook.com>, dani@dpwright.com
 copyright:           (c) 2013 Daniel P. Wright
 category:            Network
 build-type:          Simple
