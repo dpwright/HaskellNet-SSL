@@ -10,7 +10,7 @@ data Settings = Settings
               , sslMaxLineLength               :: Int
               , sslLogToConsole                :: Bool
               , sslDisableCertificateValidation :: Bool
-              }
+              } deriving(Eq, Ord, Show)
 
 defaultSettingsWithPort :: PortNumber -> Settings
 defaultSettingsWithPort p = Settings
