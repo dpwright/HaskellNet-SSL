@@ -27,8 +27,8 @@ imapTest = do
 smtpTest = doSMTPSTARTTLS "smtp.gmail.com" $ \c -> do
     authSucceed <- SMTP.authenticate LOGIN username password c
     if authSucceed
-      then print "Authentication error."
-      else sendPlainTextMail recipient username subject body c
+      then sendPlainTextMail recipient username subject body c
+      else print "Authentication error."
   where subject = "Test message"
         body    = "This is a test message"
 
