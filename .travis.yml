@@ -2,7 +2,5 @@ language: haskell
 matrix:
   fast_finish: true
   include:
-    - ghc: 8.2
-    - ghc: 8.0
     - ghc: 7.10
     - ghc: 7.8
