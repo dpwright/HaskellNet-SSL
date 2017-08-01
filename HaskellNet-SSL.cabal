@@ -35,15 +35,15 @@ library
     build-depends:     base >= 4,
                        HaskellNet >= 0.3,
                        tls >= 1.2,
-                       connection >= 0.2,
+                       connection >= 0.2.7,
                        network >= 2.4,
                        bytestring,
                        data-default
   else
     build-depends:     base >= 4 && < 5,
                        HaskellNet >= 0.3 && < 0.6,
-                       tls >= 1.2 && < 1.4,
-                       connection == 0.2.*,
+                       tls >= 1.2 && < 1.5,
+                       connection >= 0.2.7 && < 0.3,
                        network >= 2.4 && < 2.7,
                        bytestring,
                        data-default

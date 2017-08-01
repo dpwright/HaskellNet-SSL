@@ -28,6 +28,7 @@ connectionToStream c cfg = BSStream
   , bsClose = connectionClose c
   , bsIsOpen = return True
   , bsGetLine = connectionGetLine maxl c >>= withLog "RECV"
+  , bsWaitForInput = connectionWaitForInput c
   } where maxl = sslMaxLineLength cfg
           withLog = if sslLogToConsole cfg then logToConsole
                                            else flip (const . return)
