@@ -48,10 +48,12 @@ connectSTARTTLS hostname cfg = do
     (bs, startTLS) <- connectPlain hostname cfg
 
     greeting <- bsGetLine bs
-    failIfNot bs 220 $ parseResponse greeting
+    failIfNot bs 220 $ parse $ B.unpack greeting
 
     hn <- getHostName
     bsPut bs $ B.pack ("HELO " ++ hn ++ "\r\n")
+    getResponse bs >>= failIfNot bs 250
+    bsPut bs $ B.pack ("EHLO " ++ hn ++ "\r\n")
     getResponse bs >>= failIfNot bs 250
     bsPut bs $ B.pack "STARTTLS\r\n"
     getResponse bs >>= failIfNot bs 220
@@ -60,10 +62,12 @@ connectSTARTTLS hostname cfg = do
 
     prefixRef <- newIORef [greeting]
     return $ bs {bsGetLine = prefixedGetLine prefixRef (bsGetLine bs)}
-  where parseResponse = parse . B.unpack
-        parse s = (getCode  s, s)
+  where getFinalResponse bs = do
+            line <- fmap B.unpack $ bsGetLine bs
+            if (line !! 3) == '-' then getFinalResponse bs else return line
+        parse s = (getCode s, s)
         getCode = read . head . words
-        getResponse bs = liftM parseResponse $ bsGetLine bs
+        getResponse bs = liftM parse $ getFinalResponse bs
 
 failIfNot :: BSStream -> Integer -> (Integer, String) -> IO ()
 failIfNot bs code (rc, rs) = when (code /= rc) closeAndFail
