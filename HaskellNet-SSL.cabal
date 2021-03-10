@@ -37,7 +37,7 @@ library
   other-modules:       Network.HaskellNet.SSL.Internal
   if flag(NoUpperBounds)
     build-depends:     base >= 4,
-                       HaskellNet >= 0.3,
+                       HaskellNet >= 0.3 && < 0.7,
                        tls >= 1.2,
                        connection >= 0.2.7,
                        bytestring,
