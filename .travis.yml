@@ -1,6 +1,29 @@
-language: haskell
-matrix:
-  fast_finish: true
-  include:
-    - ghc: 7.10
-    - ghc: 7.8
+# https://docs.haskellstack.org/en/stable/travis_ci/
+
+language: generic
+cache:
+  directories:
+  - $HOME/.local/bin
+  - $HOME/.stack
+  - $TRAVIS_BUILD_DIR/.stack-work
+
+addons:
+  apt:
+    packages:
+      - haskell-stack
+
+os: linux
+
+dist: bionic
+
+script:
+  - export DIR=~/.local/bin
+  - if [ ! -d "$DIR" ]; then mkdir -p $DIR; fi
+  - export PATH=$HOME/.local/bin:$PATH
+  - hash -r
+  - stack upgrade
+  - travis_retry eval $"stack setup"
+  - travis_retry eval $"stack build --dependencies-only"
+  - stack build
+  - travis_retry eval $"stack test --no-run-tests"
+  - stack test
