@@ -1,6 +1,6 @@
 name:                HaskellNet-SSL
 synopsis:            Helpers to connect to SSL/TLS mail servers with HaskellNet
-version:             0.3.4.3
+version:             0.3.4.4
 description:         This package ties together the HaskellNet and connection
                      packages to make it easy to open IMAP and SMTP connections
                      over SSL.
@@ -15,10 +15,6 @@ build-type:          Simple
 cabal-version:       >=1.10
 data-files:          README.md
 
-flag NoUpperBounds
-  Description: Removes upper bounds from all packages
-  Default: False
-
 flag network-bsd
    description: Get Network.BSD from the network-bsd package
    default: True
@@ -30,27 +26,19 @@ source-repository head
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
+  default-language:    Haskell2010
   exposed-modules:     Network.HaskellNet.IMAP.SSL
                        Network.HaskellNet.POP3.SSL
                        Network.HaskellNet.SMTP.SSL
                        Network.HaskellNet.SSL
   other-modules:       Network.HaskellNet.SSL.Internal
-  if flag(NoUpperBounds)
-    build-depends:     base >= 4,
-                       HaskellNet >= 0.3,
-                       tls >= 1.2,
-                       connection >= 0.2.7,
-                       bytestring,
-                       data-default
-  else
-    build-depends:     base >= 4 && < 5,
+  build-depends:       base >= 4 && < 5,
                        HaskellNet >= 0.3 && < 0.7,
-                       tls >= 1.2 && < 1.6,
                        connection >= 0.2.7 && < 0.4,
-                       bytestring,
-                       data-default
+                       bytestring >= 0.9 && < 0.12,
+                       data-default >= 0.2 && < 0.8
   if flag(network-bsd)
-    build-depends:     network >= 3.0,
-                       network-bsd >= 2.7
+    build-depends:     network >= 3.0 && < 3.2,
+                       network-bsd >= 2.7 && < 2.9
   else
     build-depends:     network >= 2.4 && < 3.0
