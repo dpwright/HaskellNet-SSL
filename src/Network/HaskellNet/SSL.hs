@@ -10,13 +10,15 @@ import Network.Socket (PortNumber)
 import Network.Socket.Internal (PortNumber)
 #endif
 
+-- | Settings for configuring HaskellNet connections
 data Settings = Settings
-              { sslPort                        :: PortNumber
-              , sslMaxLineLength               :: Int
-              , sslLogToConsole                :: Bool
-              , sslDisableCertificateValidation :: Bool
+              { sslPort                        :: PortNumber -- ^ Port number to connect to
+              , sslMaxLineLength               :: Int -- ^ Max line lengths
+              , sslLogToConsole                :: Bool -- ^ Log info to console
+              , sslDisableCertificateValidation :: Bool -- ^ Disable certificate validation
               } deriving(Eq, Ord, Show)
 
+-- | Construct default settings for a port
 defaultSettingsWithPort :: PortNumber -> Settings
 defaultSettingsWithPort p = Settings
   { sslPort = p

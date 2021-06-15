@@ -1,3 +1,4 @@
+-- | IMAP SSL Connections
 module Network.HaskellNet.IMAP.SSL
     ( -- * Establishing connection
       connectIMAPSSL
@@ -15,11 +16,14 @@ import Network.HaskellNet.SSL
 
 import Network.HaskellNet.SSL.Internal
 
+-- | Create IMAP connection with default settings
 connectIMAPSSL :: String -> IO IMAPConnection
 connectIMAPSSL hostname = connectIMAPSSLWithSettings hostname defaultSettingsIMAPSSL
 
+-- | Create IMAP connection with given settings
 connectIMAPSSLWithSettings :: String -> Settings -> IO IMAPConnection
 connectIMAPSSLWithSettings hostname cfg = connectSSL hostname cfg >>= connectStream
 
+-- | Default IMAP SSL settings, port 993
 defaultSettingsIMAPSSL :: Settings
 defaultSettingsIMAPSSL = defaultSettingsWithPort 993
