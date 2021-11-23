@@ -52,7 +52,7 @@ connectSTARTTLS hostname cfg = do
 
     hn <- getHostName
     bsPut bs $ B.pack ("HELO " ++ hn ++ "\r\n")
-    getResponse bs >>= failIfNot bs 250
+    getResponse bs >>= failIfNotEx bs (`elem` [250, 502])
     bsPut bs $ B.pack ("EHLO " ++ hn ++ "\r\n")
     getResponse bs >>= failIfNot bs 250
     bsPut bs $ B.pack "STARTTLS\r\n"
@@ -71,6 +71,11 @@ connectSTARTTLS hostname cfg = do
 
 failIfNot :: BSStream -> Integer -> (Integer, String) -> IO ()
 failIfNot bs code (rc, rs) = when (code /= rc) closeAndFail
+  where closeAndFail = bsClose bs >> fail ("cannot connect to server: " ++ rs)
+
+-- | Extended version of fail if, can support multiple statuses
+failIfNotEx :: BSStream -> (Integer -> Bool) -> (Integer, String) -> IO ()
+failIfNotEx bs f (rc, rs) = unless (f rc) closeAndFail
   where closeAndFail = bsClose bs >> fail ("cannot connect to server: " ++ rs)
 
 -- This is a bit of a nasty hack.  Network.HaskellNet.SMTP.connectStream
