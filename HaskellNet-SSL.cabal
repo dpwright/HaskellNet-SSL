@@ -1,19 +1,20 @@
 name:                HaskellNet-SSL
 synopsis:            Helpers to connect to SSL/TLS mail servers with HaskellNet
-version:             0.3.4.4
+version:             0.4.0.0
 description:         This package ties together the HaskellNet and connection
                      packages to make it easy to open IMAP and SMTP connections
                      over SSL.
 homepage:            https://github.com/dpwright/HaskellNet-SSL
+tested-with:         GHC ==9.4.8 || ==9.6.5 || ==9.8.2
 license:             BSD3
 license-file:        LICENSE
 author:              Daniel P. Wright
-maintainer:          Leza M. Lutonda <lemol-c@outlook.com>, dani@dpwright.com
+maintainer:          Leza M. Lutonda <lemol-c@outlook.com>, dani@dpwright.com, contact@mangoiv.com
 copyright:           (c) 2013 Daniel P. Wright
 category:            Network
 build-type:          Simple
-cabal-version:       >=1.10
-data-files:          README.md
+cabal-version:       1.18
+extra-doc-files:          README.md, CHANGELOG.md
 
 flag network-bsd
    description: Get Network.BSD from the network-bsd package
@@ -34,7 +35,7 @@ library
   other-modules:       Network.HaskellNet.SSL.Internal
   build-depends:       base >= 4 && < 5,
                        HaskellNet >= 0.3 && < 0.7,
-                       crypton-connection >= 0.3.1,
+                       crypton-connection >= 0.3.1 && < 0.5,
                        bytestring >= 0.9 && < 0.13,
                        data-default >= 0.2 && < 0.8
   if flag(network-bsd)
@@ -42,3 +43,14 @@ library
                        network-bsd >= 2.7 && < 2.9
   else
     build-depends:     network >= 2.4 && < 3.0
+
+executable HaskellNet-SSL-example
+  hs-source-dirs:   examples
+  main-is:          gmail.hs
+  other-modules:
+  build-depends: base,
+                 HaskellNet-SSL,
+                 HaskellNet,
+                 bytestring
+
+  default-language: Haskell2010
