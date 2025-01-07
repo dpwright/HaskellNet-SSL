@@ -5,6 +5,7 @@ description:         This package ties together the HaskellNet and connection
                      packages to make it easy to open IMAP and SMTP connections
                      over SSL.
 homepage:            https://github.com/dpwright/HaskellNet-SSL
+tested-with:         GHC ==9.4.8 || ==9.6.5 || ==9.8.2
 license:             BSD3
 license-file:        LICENSE
 author:              Daniel P. Wright
