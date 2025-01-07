@@ -30,3 +30,4 @@ cabal.config
 *.aux
 *.hp
 .stack-work/
+dist-newstyle
