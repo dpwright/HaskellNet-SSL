@@ -39,7 +39,7 @@ library
                        bytestring >= 0.9 && < 0.13,
                        data-default >= 0.2 && < 0.8
   if flag(network-bsd)
-    build-depends:     network >= 3.0 && < 3.2,
+    build-depends:     network >= 3.0 && < 3.3,
                        network-bsd >= 2.7 && < 2.9
   else
     build-depends:     network >= 2.4 && < 3.0
