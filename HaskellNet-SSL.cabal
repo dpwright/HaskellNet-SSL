@@ -37,12 +37,12 @@ library
                        HaskellNet >= 0.3 && < 0.7,
                        crypton-connection >= 0.3.1 && < 0.5,
                        bytestring >= 0.9 && < 0.13,
-                       data-default >= 0.2 && < 0.8
+                       data-default >= 0.2 && < 0.9
   if flag(network-bsd)
-    build-depends:     network >= 3.0 && < 3.2,
+    build-depends:     network >= 3.0 && < 3.3,
                        network-bsd >= 2.7 && < 2.9
   else
-    build-depends:     network >= 2.4 && < 3.0
+    build-depends:     network >= 2.4 && < 3.3
 
 executable HaskellNet-SSL-example
   hs-source-dirs:   examples
