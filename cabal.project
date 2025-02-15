@@ -1,4 +1,6 @@
 packages: .
 
 allow-newer:
-  HaskellNet:base
+  , HaskellNet:base
+  , HaskellNet:network
+  , HaskellNet:data-default
