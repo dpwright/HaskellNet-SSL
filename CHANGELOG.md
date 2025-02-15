@@ -10,3 +10,7 @@
 ## 0.4.0.1 -- 2025-01-17
 
 - Ignore 502 error on helo - fixes communication with some servers
+
+## 0.4.0.1 -- 2025-02-15
+
+- bump data-default and network
